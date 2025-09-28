@@ -16,6 +16,16 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install --no-install-recommends ffmpeg
           ./test/run-test.sh
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-autotools-binaries
+          path: |
+            aac-enc
+            aac-dec
+            *.so*
+            *.a
+          if-no-files-found: warn
 
   linux-cmake:
     runs-on: ubuntu-latest
@@ -31,6 +41,16 @@ jobs:
           sudo apt-get update && sudo apt-get install --no-install-recommends ffmpeg
           cd build
           ../test/run-test.sh
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-cmake-binaries
+          path: |
+            build/aac-enc
+            build/aac-dec
+            build/*.so*
+            build/*.a
+          if-no-files-found: warn
 
   linux-sanitizers-gcc-autotools:
     runs-on: ubuntu-latest
@@ -47,6 +67,16 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install --no-install-recommends ffmpeg
           ./test/run-test.sh
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-sanitizers-gcc-autotools-binaries
+          path: |
+            aac-enc
+            aac-dec
+            *.so*
+            *.a
+          if-no-files-found: warn
 
   linux-sanitizers-clang-cmake:
     runs-on: ubuntu-latest
@@ -63,6 +93,16 @@ jobs:
           sudo apt-get update && sudo apt-get install --no-install-recommends ffmpeg
           cd build
           ../test/run-test.sh
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-sanitizers-clang-cmake-binaries
+          path: |
+            build/aac-enc
+            build/aac-dec
+            build/*.so*
+            build/*.a
+          if-no-files-found: warn
 
   macos-autotools:
     runs-on: macos-latest
@@ -77,6 +117,16 @@ jobs:
           ./autogen.sh
           ./configure --enable-example
           make -j$(sysctl -n hw.ncpu) CFLAGS="-g -O2 -Werror" CXXFLAGS="-g -O2 -Werror -Wno-deprecated-declarations"
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-autotools-binaries
+          path: |
+            aac-enc
+            aac-dec
+            *.dylib
+            *.a
+          if-no-files-found: warn
 
   macos-cmake:
     runs-on: macos-latest
@@ -87,6 +137,16 @@ jobs:
         run: |
           cmake . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_PROGRAMS=YES -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_C_FLAGS="-Werror" -DCMAKE_CXX_FLAGS="-Werror -Wno-deprecated-declarations"
           cmake --build build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-cmake-binaries
+          path: |
+            build/aac-enc
+            build/aac-dec
+            build/*.dylib
+            build/*.a
+          if-no-files-found: warn
 
   mingw-cross-autotools:
     runs-on: ubuntu-latest
@@ -101,6 +161,16 @@ jobs:
           ./autogen.sh
           ./configure --enable-example --host=x86_64-w64-mingw32
           make -j$(nproc) CFLAGS="-g -O2 -Werror" CXXFLAGS="-g -O2 -Werror"
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mingw-cross-autotools-binaries
+          path: |
+            aac-enc.exe
+            aac-dec.exe
+            *.dll
+            *.a
+          if-no-files-found: warn
 
   mingw-cross-cmake:
     runs-on: ubuntu-latest
@@ -114,6 +184,16 @@ jobs:
         run: |
           cmake . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_PROGRAMS=YES -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ -DCMAKE_CROSSCOMPILING=TRUE -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_FLAGS="-Werror" -DCMAKE_CXX_FLAGS="-Werror -Wno-stringop-overflow"
           cmake --build build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mingw-cross-cmake-binaries
+          path: |
+            build/aac-enc.exe
+            build/aac-dec.exe
+            build/*.dll
+            build/*.a
+          if-no-files-found: warn
 
   msys-cmake:
     runs-on: windows-latest
@@ -136,6 +216,16 @@ jobs:
         run: |
           cmake . -G Ninja -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_PROGRAMS=YES
           cmake --build build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: msys-cmake-binaries
+          path: |
+            build/aac-enc.exe
+            build/aac-dec.exe
+            build/*.dll
+            build/*.a
+          if-no-files-found: warn
 
   msvc-cmake:
     runs-on: windows-latest
@@ -146,6 +236,16 @@ jobs:
         run: |
           cmake . -B build -DBUILD_PROGRAMS=YES
           cmake --build build --config Release
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: msvc-cmake-binaries
+          path: |
+            build/Release/aac-enc.exe
+            build/Release/aac-dec.exe
+            build/Release/*.dll
+            build/Release/*.lib
+          if-no-files-found: warn
 
   msvc-cmake-ninja-arm:
     runs-on: windows-latest
@@ -161,6 +261,16 @@ jobs:
         run: |
           cmake . -G Ninja -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_PROGRAMS=YES
           cmake --build build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: msvc-cmake-ninja-arm-binaries
+          path: |
+            build/aac-enc.exe
+            build/aac-dec.exe
+            build/*.dll
+            build/*.lib
+          if-no-files-found: warn
 
   msvc-cmake-arm64:
     runs-on: windows-latest
@@ -171,6 +281,16 @@ jobs:
         run: |
           cmake . -B build -DBUILD_PROGRAMS=YES -A ARM64
           cmake --build build --config Release
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: msvc-cmake-arm64-binaries
+          path: |
+            build/Release/aac-enc.exe
+            build/Release/aac-dec.exe
+            build/Release/*.dll
+            build/Release/*.lib
+          if-no-files-found: warn
 
   llvm-mingw:
     runs-on: ubuntu-latest
@@ -189,6 +309,16 @@ jobs:
           ./autogen.sh
           ./configure --host=aarch64-w64-mingw32 --enable-example
           make -j$(nproc) CFLAGS="-g -O2 -Werror" CXXFLAGS="-g -O2 -Werror"
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: llvm-mingw-binaries
+          path: |
+            aac-enc.exe
+            aac-dec.exe
+            *.dll
+            *.a
+          if-no-files-found: warn
 
   linux-ffmpeg:
     runs-on: ubuntu-latest
@@ -214,6 +344,16 @@ jobs:
           cd ffmpeg
           PKG_CONFIG_PATH=$(pwd)/../prefix/lib/pkgconfig ./configure --enable-libfdk-aac --enable-nonfree
           make -j$(nproc)
+      - name: Upload FFmpeg build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-with-fdk-aac
+          path: |
+            ffmpeg/ffmpeg
+            ffmpeg/ffprobe
+            prefix/lib/*.so*
+            prefix/lib/*.a
+          if-no-files-found: warn
 
   check-archive:
     runs-on: ubuntu-latest
@@ -223,6 +363,14 @@ jobs:
       - name: Check archive content
         run: |
           ./check-archive.sh
+      - name: Upload archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: archive-check-results
+          path: |
+            *.tar.gz
+            *.zip
+          if-no-files-found: warn
 
   check-install:
     strategy:
@@ -247,3 +395,11 @@ jobs:
       - name: Check install content
         run: |
           ./check-install.sh ${{matrix.params}}
+      - name: Upload install artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: install-check-${{matrix.runner}}-${{matrix.params || 'default'}}
+          path: |
+            install_*/
+            prefix/
+          if-no-files-found: warn
