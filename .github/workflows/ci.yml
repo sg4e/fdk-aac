@@ -104,50 +104,6 @@ jobs:
             build/*.a
           if-no-files-found: warn
 
-  macos-autotools:
-    runs-on: macos-latest
-    steps:
-      - name: Install autotools
-        run: |
-          brew install autoconf automake libtool
-      - name: Checkout sources
-        uses: actions/checkout@v4
-      - name: Build
-        run: |
-          ./autogen.sh
-          ./configure --enable-example
-          make -j$(sysctl -n hw.ncpu) CFLAGS="-g -O2 -Werror" CXXFLAGS="-g -O2 -Werror -Wno-deprecated-declarations"
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-autotools-binaries
-          path: |
-            aac-enc
-            aac-dec
-            *.dylib
-            *.a
-          if-no-files-found: warn
-
-  macos-cmake:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
-      - name: Build
-        run: |
-          cmake . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_PROGRAMS=YES -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_C_FLAGS="-Werror" -DCMAKE_CXX_FLAGS="-Werror -Wno-deprecated-declarations"
-          cmake --build build
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-cmake-binaries
-          path: |
-            build/aac-enc
-            build/aac-dec
-            build/*.dylib
-            build/*.a
-          if-no-files-found: warn
-
   mingw-cross-autotools:
     runs-on: ubuntu-latest
     steps:
